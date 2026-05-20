@@ -6,49 +6,51 @@
 <title>Mountain of Evidence — Self-Help Techniques</title>
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #1d1620; }
+  html, body { margin: 0; padding: 0; background: #f4ede1; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #f5ecdc;
-    overflow-x: hidden;
+    color: #2d2418;
   }
   header {
     text-align: center;
-    padding: 28px 16px 8px;
-    background: linear-gradient(180deg, #2a1f2c 0%, #3a2b3a 100%);
+    padding: 24px 16px 6px;
+    background: #f4ede1;
   }
   header h1 {
     margin: 0;
     font-size: 26px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: #fdf0d8;
+    font-weight: 700;
+    color: #3a2d1d;
+    letter-spacing: -0.01em;
   }
   header .subtitle {
     margin: 8px auto 0;
     max-width: 720px;
     font-size: 13px;
-    color: #d8c9b8;
+    color: #5e4d36;
     line-height: 1.5;
-    font-style: italic;
   }
   .legend {
     display: flex; justify-content: center; flex-wrap: wrap;
-    gap: 4px 18px;
-    padding: 12px 16px 18px;
-    background: linear-gradient(180deg, #3a2b3a 0%, #4a3344 100%);
-    font-size: 11px;
-    color: #e8d8c4;
+    gap: 8px 18px;
+    padding: 14px 16px 18px;
+    background: #f4ede1;
+    border-bottom: 1.5px solid #d6c8ad;
+    font-size: 12px;
+    color: #3a2d1d;
   }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
   .swatch {
-    width: 12px; height: 12px; border-radius: 50%;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: white;
+    border: 2px solid;
   }
-  .swatch.s-strong       { background: radial-gradient(circle, #fff2b8 25%, #f4d58d 80%); box-shadow: 0 0 10px #fce29a; }
-  .swatch.s-mod-strong   { background: #f0e2c4; box-shadow: 0 0 6px rgba(240,226,196,0.55); }
-  .swatch.s-moderate     { background: #c8d4ae; box-shadow: 0 0 4px rgba(200,212,174,0.35); }
-  .swatch.s-questionable { background: #c39c83; opacity: 0.9; }
-  .swatch.s-unsupported  { background: #d2bdbd; opacity: 0.55; }
+  .swatch.s-strong       { background: #f5c842; border-color: #6b4e1f; color: #6b4e1f; }
+  .swatch.s-mod-strong   { background: #4a9d5a; border-color: #1f5e2a; }
+  .swatch.s-moderate     { background: #8fab57; border-color: #4e5e2f; }
+  .swatch.s-questionable { background: #c28556; border-color: #6e4828; }
+  .swatch.s-unsupported  { background: #8b7878; border-color: #4a3d3d; opacity: 0.85; }
 
   /* The scene */
   .scene {
@@ -56,86 +58,50 @@
     width: 100%;
     aspect-ratio: 1600 / 1000;
     overflow: hidden;
+    background: #c2dcec;
   }
-  .landscape {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    display: block;
-  }
-  .markers {
-    position: absolute; inset: 0;
-    pointer-events: none;
-  }
+  .landscape { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .markers { position: absolute; inset: 0; pointer-events: none; }
+
   .marker {
     position: absolute;
     transform: translate(-50%, -50%);
+    width: 22px; height: 22px;
     border-radius: 50%;
+    border: 2px solid;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
     cursor: help;
     pointer-events: auto;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   }
   .marker:hover {
-    transform: translate(-50%, -50%) scale(1.8);
+    transform: translate(-50%, -50%) scale(1.4);
     z-index: 50;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   }
-  .marker.strong {
-    width: 14px; height: 14px;
-    background: radial-gradient(circle, #fff5c0 28%, #f4d58d 75%);
-    box-shadow: 0 0 14px #fce29a, 0 0 28px rgba(252, 226, 154, 0.55);
-  }
-  .marker.strong:hover {
-    box-shadow: 0 0 22px #fff5c0, 0 0 48px rgba(252, 226, 154, 0.8);
-  }
-  .marker.mod-strong {
-    width: 12px; height: 12px;
-    background: radial-gradient(circle, #fbeed1 30%, #f0e2c4 80%);
-    box-shadow: 0 0 10px rgba(240, 226, 196, 0.7);
-  }
-  .marker.mod-strong:hover {
-    box-shadow: 0 0 16px rgba(251, 238, 209, 0.95);
-  }
-  .marker.moderate {
-    width: 10px; height: 10px;
-    background: radial-gradient(circle, #d9e3c0 30%, #c8d4ae 80%);
-    box-shadow: 0 0 6px rgba(200, 212, 174, 0.5);
-  }
-  .marker.moderate:hover {
-    box-shadow: 0 0 12px rgba(217, 227, 192, 0.85);
-  }
-  .marker.questionable {
-    width: 9px; height: 9px;
-    background: radial-gradient(circle, #d2ab92 30%, #b08a72 85%);
-    opacity: 0.92;
-    box-shadow: 0 0 4px rgba(176, 138, 114, 0.6);
-  }
-  .marker.questionable:hover {
-    opacity: 1;
-    box-shadow: 0 0 10px rgba(210, 171, 146, 0.9);
-  }
-  .marker.unsupported {
-    width: 8px; height: 8px;
-    background: radial-gradient(circle, #e0cccc 30%, #b8a4a4 90%);
-    opacity: 0.5;
-    filter: blur(0.4px);
-    box-shadow: 0 0 8px rgba(224, 204, 204, 0.35);
-  }
-  .marker.unsupported:hover {
-    opacity: 0.95;
-    filter: blur(0);
-    box-shadow: 0 0 16px rgba(224, 204, 204, 0.85);
-  }
+  .marker.strong       { background: #f5c842; border-color: #6b4e1f; color: #6b4e1f; }
+  .marker.mod-strong   { background: #4a9d5a; border-color: #1f5e2a; color: #fff; }
+  .marker.moderate     { background: #8fab57; border-color: #4e5e2f; color: #fff; }
+  .marker.questionable { background: #c28556; border-color: #6e4828; color: #fff; }
+  .marker.unsupported  { background: #8b7878; border-color: #4a3d3d; color: #fff; opacity: 0.88; }
+  .marker.unsupported:hover { opacity: 1; }
 
-  /* Tier labels (left edge of scene) */
+  /* Tier labels along left edge */
   .tier-label {
     position: absolute;
-    left: 16px;
+    left: 12px;
     font-size: 10px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: rgba(255, 235, 210, 0.45);
-    font-weight: 600;
+    color: #3a2d1d;
+    font-weight: 700;
+    background: rgba(244, 237, 225, 0.88);
+    padding: 3px 8px;
+    border-radius: 3px;
     pointer-events: none;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    border: 1px solid rgba(58, 45, 29, 0.2);
   }
 
   /* Tooltip */
@@ -143,23 +109,23 @@
     position: fixed;
     display: none;
     max-width: 340px;
-    background: rgba(20, 14, 18, 0.95);
-    color: #fdf0d8;
+    background: #2d2418;
+    color: #f4ede1;
     padding: 13px 15px;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 13px;
     line-height: 1.5;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 245, 220, 0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
     z-index: 1000;
     pointer-events: none;
-    backdrop-filter: blur(6px);
   }
   #tooltip .tt-meta {
     font-size: 10px;
-    color: #c9a99e;
-    margin-bottom: 4px;
+    color: #c9b58e;
+    margin-bottom: 5px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+    font-weight: 600;
   }
   #tooltip .tt-name {
     font-weight: 700;
@@ -167,15 +133,13 @@
     color: #fff5dc;
     margin-bottom: 6px;
   }
-  #tooltip .tt-howto {
-    color: #e3d4c0;
-  }
+  #tooltip .tt-howto { color: #e3d4c0; }
 
   footer {
     text-align: center;
-    padding: 16px 16px 28px;
-    background: #1d1620;
-    color: #806b65;
+    padding: 14px 16px 22px;
+    background: #f4ede1;
+    color: #856e4e;
     font-size: 11px;
     font-style: italic;
   }
@@ -184,178 +148,369 @@
 <body>
   <header>
     <h1>The Mountain of Evidence</h1>
-    <p class="subtitle">84 self-help techniques placed across a landscape of trust — from the foggy lowlands of unsupported claims to the sunlit summit of strong evidence. Hover any marker to see how to do it.</p>
+    <p class="subtitle">84 self-help techniques placed across a mountain landscape. Each evidence tier is its own terrain — from foggy swamp lowlands at the base to the solid summit at the top. Hover any marker for the how-to.</p>
   </header>
 
   <div class="legend">
-    <div class="legend-item"><span class="swatch s-strong"></span>Summit · Strong Evidence</div>
-    <div class="legend-item"><span class="swatch s-mod-strong"></span>Well-Built Trail · Moderate-to-Strong</div>
-    <div class="legend-item"><span class="swatch s-moderate"></span>Marked Trail · Moderate</div>
-    <div class="legend-item"><span class="swatch s-questionable"></span>Loose Scree · Questionable</div>
-    <div class="legend-item"><span class="swatch s-unsupported"></span>Foggy Lowlands · Unsupported</div>
+    <div class="legend-item"><span class="swatch s-strong">★</span>Summit · Strong Evidence</div>
+    <div class="legend-item"><span class="swatch s-mod-strong">✓</span>Bridged Trail · Mod-to-Strong</div>
+    <div class="legend-item"><span class="swatch s-moderate">⤴</span>Marked Trail · Moderate</div>
+    <div class="legend-item"><span class="swatch s-questionable">⚠</span>Loose Scree · Questionable</div>
+    <div class="legend-item"><span class="swatch s-unsupported">×</span>Swamp Lowlands · Unsupported</div>
   </div>
 
   <div class="scene" id="scene">
-    <svg class="landscape" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <!-- Sky gradient: peach top → soft pink → pale lavender -->
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#fde2d3"/>
-          <stop offset="35%"  stop-color="#f9d2c8"/>
-          <stop offset="70%"  stop-color="#e9c4d3"/>
-          <stop offset="100%" stop-color="#cdb4cf"/>
-        </linearGradient>
+    <svg class="landscape" id="landscape" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
 
-        <!-- Sun glow behind summit -->
-        <radialGradient id="sunglow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stop-color="#fff7c8" stop-opacity="0.95"/>
-          <stop offset="35%"  stop-color="#ffe5a0" stop-opacity="0.55"/>
-          <stop offset="70%"  stop-color="#fbcfa8" stop-opacity="0.18"/>
-          <stop offset="100%" stop-color="#fbcfa8" stop-opacity="0"/>
-        </radialGradient>
+      <!-- SKY -->
+      <rect width="1600" height="1000" fill="#c2dcec"/>
 
-        <!-- Mountain layer gradients (back to front) -->
-        <linearGradient id="far-mtn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#d6c4d8"/>
-          <stop offset="100%" stop-color="#c3b1c8"/>
-        </linearGradient>
-        <linearGradient id="mid-mtn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#c9b4c4"/>
-          <stop offset="100%" stop-color="#aa97a6"/>
-        </linearGradient>
-        <linearGradient id="main-mtn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#f0d6c2"/>
-          <stop offset="30%"  stop-color="#dbb89e"/>
-          <stop offset="65%"  stop-color="#a89078"/>
-          <stop offset="100%" stop-color="#7a6557"/>
-        </linearGradient>
-        <linearGradient id="scree" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#8a7160"/>
-          <stop offset="100%" stop-color="#5d4a44"/>
-        </linearGradient>
-        <linearGradient id="swamp" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#6e6260" stop-opacity="0.85"/>
-          <stop offset="50%"  stop-color="#544543" stop-opacity="0.95"/>
-          <stop offset="100%" stop-color="#3a2e30"/>
-        </linearGradient>
+      <!-- Sun -->
+      <circle cx="1280" cy="160" r="55" fill="#fbe89d" stroke="#d6b95f" stroke-width="2.5"/>
 
-        <!-- Mist overlay -->
-        <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#fff5e8" stop-opacity="0"/>
-          <stop offset="50%"  stop-color="#fff5e8" stop-opacity="0.65"/>
-          <stop offset="100%" stop-color="#fff5e8" stop-opacity="0.25"/>
-        </linearGradient>
-
-        <!-- Filters: gaussian blur for painterly softness -->
-        <filter id="soft-blur" x="-10%" y="-10%" width="120%" height="120%">
-          <feGaussianBlur stdDeviation="2.5"/>
-        </filter>
-        <filter id="strong-blur" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="10"/>
-        </filter>
-        <filter id="bloom" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="14"/>
-        </filter>
-      </defs>
-
-      <!-- Sky -->
-      <rect width="1600" height="1000" fill="url(#sky)"/>
-
-      <!-- Sun glow (behind summit) -->
-      <circle cx="800" cy="200" r="380" fill="url(#sunglow)" filter="url(#bloom)"/>
-      <circle cx="800" cy="200" r="180" fill="url(#sunglow)"/>
-
-      <!-- Far mountain layer (very soft, distant) -->
-      <path d="M -100 760 Q 200 660 400 620 T 800 480 T 1200 600 T 1700 720 L 1700 1000 L -100 1000 Z"
-            fill="url(#far-mtn)" opacity="0.7" filter="url(#strong-blur)"/>
-
-      <!-- Mid mountain layer -->
-      <path d="M -100 830 Q 150 720 350 640 Q 550 540 750 400 Q 900 320 1050 380 Q 1250 520 1450 680 Q 1600 760 1700 800 L 1700 1000 L -100 1000 Z"
-            fill="url(#mid-mtn)" opacity="0.85" filter="url(#soft-blur)"/>
-
-      <!-- Main mountain (the one with the summit) -->
-      <path d="M -100 1000 L -100 820
-               C 120 760 280 660 420 540
-               C 560 420 700 280 800 180
-               C 900 280 1040 420 1180 540
-               C 1320 660 1480 760 1700 820
-               L 1700 1000 Z"
-            fill="url(#main-mtn)"/>
-
-      <!-- Well-built trail (mod-to-strong band): a curving line on upper slope -->
-      <path d="M 120 460 Q 280 420 420 430 Q 580 440 720 410 Q 880 380 1040 410 Q 1180 430 1340 450 Q 1460 470 1560 480"
-            fill="none" stroke="#f7e3c4" stroke-width="2.2" stroke-linecap="round"
-            opacity="0.55" stroke-dasharray="0"/>
-      <!-- Suggested bridges on the well-built trail (small pale rectangles) -->
-      <g opacity="0.55" fill="#f7e3c4">
-        <rect x="335" y="425" width="22" height="3" rx="1"/>
-        <rect x="630" y="400" width="22" height="3" rx="1"/>
-        <rect x="945" y="400" width="22" height="3" rx="1"/>
-        <rect x="1240" y="438" width="22" height="3" rx="1"/>
+      <!-- Clouds -->
+      <g fill="#ffffff" stroke="#a8c2d4" stroke-width="2">
+        <path d="M 180 200 Q 200 175 230 180 Q 250 160 280 175 Q 305 165 320 185 Q 335 200 320 215 L 200 215 Q 175 215 180 200 Z"/>
+        <path d="M 940 130 Q 960 110 985 115 Q 1005 100 1030 115 Q 1050 105 1065 125 Q 1075 140 1060 152 L 960 152 Q 935 152 940 130 Z"/>
+        <path d="M 580 100 Q 600 80 625 85 Q 645 70 670 85 Q 690 75 705 95 Q 715 110 700 122 L 600 122 Q 575 122 580 100 Z"/>
       </g>
 
-      <!-- Marked trail (moderate band): simpler thin dashed line, lower on the mountain -->
-      <path d="M 60 600 Q 220 580 380 600 Q 540 620 700 600 Q 860 580 1020 600 Q 1180 620 1340 600 Q 1480 590 1560 600"
-            fill="none" stroke="#dfd1ab" stroke-width="1.6" stroke-linecap="round"
-            opacity="0.5" stroke-dasharray="6 5"/>
-
-      <!-- Scree slope (questionable band): rougher textured patch -->
-      <path d="M -100 1000 L -100 760
-               C 100 720 250 700 400 720
-               C 550 740 700 730 850 720
-               C 1000 710 1150 720 1300 730
-               C 1450 740 1600 750 1700 760
-               L 1700 1000 Z"
-            fill="url(#scree)" opacity="0.75"/>
-      <!-- Scattered pebbles on scree -->
-      <g opacity="0.4" fill="#3d322c">
-        <circle cx="180" cy="780" r="3"/>
-        <circle cx="280" cy="800" r="2.5"/>
-        <circle cx="420" cy="775" r="3.5"/>
-        <circle cx="560" cy="795" r="2"/>
-        <circle cx="690" cy="790" r="3"/>
-        <circle cx="820" cy="780" r="2.5"/>
-        <circle cx="970" cy="800" r="3"/>
-        <circle cx="1110" cy="785" r="2.5"/>
-        <circle cx="1240" cy="800" r="3.5"/>
-        <circle cx="1380" cy="790" r="2.5"/>
-        <circle cx="1490" cy="795" r="3"/>
+      <!-- Birds -->
+      <g stroke="#3a2d1d" stroke-width="2" fill="none" stroke-linecap="round">
+        <path d="M 420 165 Q 428 158 436 165 M 436 165 Q 444 158 452 165"/>
+        <path d="M 1110 220 Q 1118 213 1126 220 M 1126 220 Q 1134 213 1142 220"/>
+        <path d="M 1380 250 Q 1388 244 1396 250 M 1396 250 Q 1404 244 1412 250"/>
       </g>
 
-      <!-- Swamp / foggy lowlands (unsupported band) -->
-      <rect x="-100" y="830" width="1800" height="200" fill="url(#swamp)"/>
+      <!-- DISTANT MOUNTAINS (background silhouette) -->
+      <path d="M -50 580 L 80 480 L 220 530 L 380 420 L 540 480 L 700 380 L 900 440 L 1080 360 L 1240 430 L 1400 380 L 1560 460 L 1700 420 L 1700 700 L -50 700 Z"
+            fill="#a3bdcc" stroke="#7592a5" stroke-width="2.5" stroke-linejoin="round"/>
 
-      <!-- Foreground swamp ripples / silhouette -->
-      <path d="M -50 900 Q 200 880 450 895 Q 700 910 950 895 Q 1200 880 1450 900 Q 1600 910 1700 905 L 1700 1000 L -50 1000 Z"
-            fill="#2e2528" opacity="0.55"/>
-      <path d="M -50 940 Q 250 925 550 940 Q 850 955 1150 940 Q 1400 930 1700 945 L 1700 1000 L -50 1000 Z"
-            fill="#241c1f" opacity="0.7"/>
-
-      <!-- Heavy mist over the foothills -->
-      <rect x="-100" y="700" width="1800" height="180" fill="url(#mist)" filter="url(#soft-blur)"/>
-      <!-- Wispy mist clouds -->
-      <ellipse cx="300" cy="780" rx="240" ry="38" fill="#fff5e8" opacity="0.5" filter="url(#soft-blur)"/>
-      <ellipse cx="900" cy="800" rx="320" ry="48" fill="#fff5e8" opacity="0.42" filter="url(#soft-blur)"/>
-      <ellipse cx="1400" cy="770" rx="220" ry="42" fill="#fff5e8" opacity="0.45" filter="url(#soft-blur)"/>
-
-      <!-- Tiny figure on the trail (sense of scale) -->
-      <g transform="translate(990, 600)" opacity="0.85">
-        <circle cx="0" cy="-7" r="2" fill="#3a2e28"/>
-        <rect x="-1.5" y="-5" width="3" height="7" fill="#3a2e28" rx="0.5"/>
+      <!-- Snow on distant mountains (top edges) -->
+      <g fill="#f0f4f7" stroke="#a8b8c5" stroke-width="1.5">
+        <path d="M 380 420 L 410 440 L 360 450 Z"/>
+        <path d="M 700 380 L 730 405 L 670 415 Z"/>
+        <path d="M 1080 360 L 1115 388 L 1050 395 Z"/>
       </g>
 
-      <!-- Soft atmospheric overlay near top -->
-      <rect x="0" y="0" width="1600" height="180" fill="#fff5e8" opacity="0.18"/>
+      <!-- MAIN MOUNTAIN BODY -->
+      <path d="M -50 820
+               C 80 760, 220 640, 360 500
+               C 480 380, 620 240, 760 140
+               L 820 90
+               L 870 130
+               C 980 250, 1130 410, 1280 560
+               C 1420 690, 1560 770, 1700 810
+               L 1700 820
+               L -50 820 Z"
+            fill="#a89c84" stroke="#5d5444" stroke-width="3" stroke-linejoin="round"/>
+
+      <!-- Mountain shading (right side, slightly darker) -->
+      <path d="M 820 90 L 870 130
+               C 980 250, 1130 410, 1280 560
+               C 1420 690, 1560 770, 1700 810
+               L 1700 820 L 870 820 Z"
+            fill="#8a7e68" opacity="0.4"/>
+
+      <!-- SNOW CAP -->
+      <path d="M 580 360
+               C 640 300, 710 220, 770 155
+               L 820 90
+               L 870 130
+               C 940 220, 1010 310, 1070 380
+               C 1010 340, 940 320, 870 330
+               C 800 340, 720 360, 660 370
+               C 620 375, 595 370, 580 360 Z"
+            fill="#ffffff" stroke="#7e8fa0" stroke-width="2.5" stroke-linejoin="round"/>
+
+      <!-- Snow shading -->
+      <path d="M 820 90 L 870 130
+               C 940 220, 1010 310, 1070 380
+               C 1010 340, 940 320, 870 330 Z"
+            fill="#e0e8ef" opacity="0.55"/>
+
+      <!-- FLAG AT SUMMIT -->
+      <g>
+        <line x1="820" y1="90" x2="820" y2="50" stroke="#3d3d3d" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 820 52 L 858 60 L 820 72 Z" fill="#d14f4f" stroke="#7e2e2e" stroke-width="2" stroke-linejoin="round"/>
+      </g>
+
+      <!-- BASE CAMP TENT -->
+      <g transform="translate(720, 290)">
+        <polygon points="0,0 50,0 25,-30" fill="#d14f4f" stroke="#7e2e2e" stroke-width="2" stroke-linejoin="round"/>
+        <line x1="25" y1="-30" x2="25" y2="0" stroke="#7e2e2e" stroke-width="1.5"/>
+        <polygon points="20,0 30,0 25,-18" fill="#2d2418"/>
+      </g>
+
+      <!-- FOREST BAND (trees scattered on mid mountain) -->
+      <g stroke="#2f5b30" stroke-width="1.5" stroke-linejoin="round">
+        <g fill="#5a8f5a">
+          <polygon points="100,640 115,605 130,640"/>
+          <polygon points="155,655 170,615 185,655"/>
+          <polygon points="220,615 238,575 256,615"/>
+          <polygon points="290,605 308,565 326,605"/>
+          <polygon points="1280,615 1298,575 1316,615"/>
+          <polygon points="1350,640 1368,600 1386,640"/>
+          <polygon points="1420,660 1438,620 1456,660"/>
+          <polygon points="1490,670 1508,630 1526,670"/>
+          <polygon points="1550,690 1568,650 1586,690"/>
+        </g>
+      </g>
+
+      <!-- UPPER TRAIL — well-built path with bridges -->
+      <!-- Trail base (dark outline for hand-drawn feel) -->
+      <path id="upperTrail"
+            d="M 280 460
+               C 340 440, 410 430, 480 425
+               C 540 420, 600 410, 660 400
+               L 740 380
+               L 780 380
+               C 850 390, 920 405, 990 420
+               C 1060 435, 1130 440, 1200 445
+               C 1260 450, 1320 458, 1380 470"
+            fill="none" stroke="#5b4527" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 280 460
+               C 340 440, 410 430, 480 425
+               C 540 420, 600 410, 660 400
+               L 740 380
+               L 780 380
+               C 850 390, 920 405, 990 420
+               C 1060 435, 1130 440, 1200 445
+               C 1260 450, 1320 458, 1380 470"
+            fill="none" stroke="#d4a574" stroke-width="5.5" stroke-linecap="round"/>
+
+      <!-- BRIDGE 1 on upper trail (with handrails) -->
+      <g transform="translate(730, 372)">
+        <!-- Bridge deck -->
+        <rect x="0" y="0" width="60" height="10" fill="#8a5e36" stroke="#3a2818" stroke-width="2"/>
+        <!-- Plank lines -->
+        <line x1="12" y1="0" x2="12" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <line x1="24" y1="0" x2="24" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <line x1="36" y1="0" x2="36" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <line x1="48" y1="0" x2="48" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <!-- Handrails -->
+        <line x1="0" y1="-14" x2="60" y2="-14" stroke="#5b4527" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="0" y1="-14" x2="0" y2="0" stroke="#5b4527" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="20" y1="-14" x2="20" y2="0" stroke="#5b4527" stroke-width="2"/>
+        <line x1="40" y1="-14" x2="40" y2="0" stroke="#5b4527" stroke-width="2"/>
+        <line x1="60" y1="-14" x2="60" y2="0" stroke="#5b4527" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+
+      <!-- BRIDGE 2 on upper trail -->
+      <g transform="translate(1080, 425)">
+        <rect x="0" y="0" width="65" height="10" fill="#8a5e36" stroke="#3a2818" stroke-width="2"/>
+        <line x1="13" y1="0" x2="13" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <line x1="26" y1="0" x2="26" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <line x1="39" y1="0" x2="39" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <line x1="52" y1="0" x2="52" y2="10" stroke="#3a2818" stroke-width="1"/>
+        <line x1="0" y1="-14" x2="65" y2="-14" stroke="#5b4527" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="0" y1="-14" x2="0" y2="0" stroke="#5b4527" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="22" y1="-14" x2="22" y2="0" stroke="#5b4527" stroke-width="2"/>
+        <line x1="43" y1="-14" x2="43" y2="0" stroke="#5b4527" stroke-width="2"/>
+        <line x1="65" y1="-14" x2="65" y2="0" stroke="#5b4527" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+
+      <!-- LOWER TRAIL — dashed marked path -->
+      <path id="lowerTrail"
+            d="M 90 600
+               C 200 595, 320 590, 440 595
+               C 540 600, 640 605, 740 600
+               C 840 595, 940 600, 1040 605
+               C 1160 610, 1280 605, 1400 600
+               C 1480 597, 1540 599, 1580 600"
+            fill="none" stroke="#6b4f2f" stroke-width="3.5" stroke-dasharray="14 8" stroke-linecap="round"/>
+
+      <!-- TRAIL MARKER POSTS along lower trail -->
+      <g stroke="#3a2818" stroke-width="2" fill="#a87d4d" stroke-linejoin="round">
+        <!-- Post 1 -->
+        <g transform="translate(220, 595)">
+          <line x1="0" y1="0" x2="0" y2="-22" stroke="#5b3e22" stroke-width="3.5"/>
+          <polygon points="0,-22 18,-18 0,-14" fill="#c4a06a"/>
+        </g>
+        <!-- Post 2 -->
+        <g transform="translate(560, 602)">
+          <line x1="0" y1="0" x2="0" y2="-22" stroke="#5b3e22" stroke-width="3.5"/>
+          <polygon points="0,-22 -18,-18 0,-14" fill="#c4a06a"/>
+        </g>
+        <!-- Post 3 -->
+        <g transform="translate(960, 600)">
+          <line x1="0" y1="0" x2="0" y2="-22" stroke="#5b3e22" stroke-width="3.5"/>
+          <polygon points="0,-22 18,-18 0,-14" fill="#c4a06a"/>
+        </g>
+        <!-- Post 4 -->
+        <g transform="translate(1300, 602)">
+          <line x1="0" y1="0" x2="0" y2="-22" stroke="#5b3e22" stroke-width="3.5"/>
+          <polygon points="0,-22 -18,-18 0,-14" fill="#c4a06a"/>
+        </g>
+      </g>
+
+      <!-- TINY HIKER FIGURE on lower trail (sense of scale) -->
+      <g transform="translate(780, 588)" stroke="#2d2418" stroke-width="2" fill="#2d2418" stroke-linecap="round">
+        <circle cx="0" cy="-10" r="3" fill="#e8c896"/>
+        <line x1="0" y1="-7" x2="0" y2="-1"/>
+        <line x1="0" y1="-5" x2="-4" y2="-2"/>
+        <line x1="0" y1="-5" x2="4" y2="-2"/>
+        <line x1="0" y1="-1" x2="-3" y2="4"/>
+        <line x1="0" y1="-1" x2="3" y2="4"/>
+      </g>
+
+      <!-- SCREE ZONE — pile of loose rocks at the foot of the mountain -->
+      <!-- Scree base color band (lighter rocky soil) -->
+      <path d="M -50 820
+               L 1700 820
+               L 1700 750
+               C 1500 740, 1300 760, 1100 750
+               C 900 740, 700 760, 500 750
+               C 300 740, 100 760, -50 750 Z"
+            fill="#a89578" stroke="#7a684f" stroke-width="2"/>
+      <!-- Scattered rocks (varying shapes/sizes for "loose" feel) -->
+      <g stroke="#3d322c" stroke-width="2" stroke-linejoin="round">
+        <!-- Big boulders -->
+        <ellipse cx="160" cy="790" rx="28" ry="18" fill="#7d6f5b"/>
+        <ellipse cx="310" cy="800" rx="22" ry="14" fill="#8a7c66"/>
+        <polygon points="430,810 460,790 488,810 470,818" fill="#7d6f5b"/>
+        <ellipse cx="580" cy="795" rx="26" ry="16" fill="#90826c"/>
+        <polygon points="720,808 750,788 778,810" fill="#7d6f5b"/>
+        <ellipse cx="870" cy="795" rx="24" ry="15" fill="#8a7c66"/>
+        <polygon points="1000,810 1028,790 1056,810" fill="#7d6f5b"/>
+        <ellipse cx="1150" cy="798" rx="26" ry="16" fill="#90826c"/>
+        <polygon points="1290,810 1318,788 1346,810" fill="#7d6f5b"/>
+        <ellipse cx="1440" cy="795" rx="24" ry="15" fill="#8a7c66"/>
+        <ellipse cx="1570" cy="800" rx="22" ry="14" fill="#7d6f5b"/>
+
+        <!-- Medium rocks -->
+        <circle cx="230" cy="810" r="10" fill="#988873"/>
+        <circle cx="385" cy="780" r="9" fill="#88796a"/>
+        <circle cx="520" cy="815" r="11" fill="#98876f"/>
+        <circle cx="660" cy="780" r="9" fill="#88796a"/>
+        <circle cx="810" cy="815" r="10" fill="#98876f"/>
+        <circle cx="940" cy="780" r="9" fill="#88796a"/>
+        <circle cx="1080" cy="815" r="10" fill="#98876f"/>
+        <circle cx="1220" cy="780" r="9" fill="#88796a"/>
+        <circle cx="1370" cy="815" r="10" fill="#98876f"/>
+        <circle cx="1500" cy="780" r="9" fill="#88796a"/>
+
+        <!-- Small pebbles -->
+        <g fill="#6e5f4d">
+          <circle cx="100" cy="815" r="3.5"/>
+          <circle cx="265" cy="815" r="3"/>
+          <circle cx="350" cy="810" r="3.5"/>
+          <circle cx="470" cy="800" r="3"/>
+          <circle cx="620" cy="810" r="3.5"/>
+          <circle cx="755" cy="815" r="3"/>
+          <circle cx="900" cy="810" r="3.5"/>
+          <circle cx="1035" cy="785" r="3"/>
+          <circle cx="1180" cy="810" r="3.5"/>
+          <circle cx="1335" cy="785" r="3"/>
+          <circle cx="1475" cy="810" r="3.5"/>
+          <circle cx="1610" cy="785" r="3"/>
+        </g>
+      </g>
+
+      <!-- "WATCH YOUR STEP" tipped-over sign on scree -->
+      <g transform="translate(700, 810) rotate(-22)">
+        <rect x="0" y="0" width="60" height="22" fill="#c4a06a" stroke="#3a2818" stroke-width="2" rx="2"/>
+        <text x="30" y="14" font-size="10" fill="#3a2818" text-anchor="middle" font-weight="700" font-family="sans-serif">! LOOSE !</text>
+        <line x1="0" y1="22" x2="-10" y2="40" stroke="#5b3e22" stroke-width="3"/>
+      </g>
+
+      <!-- SWAMP / FOGGY LOWLANDS -->
+      <!-- Water -->
+      <rect x="-50" y="820" width="1700" height="200" fill="#4a6b62" stroke="#2f4d44" stroke-width="2.5"/>
+      <!-- Subtle darker undertone -->
+      <rect x="-50" y="930" width="1700" height="90" fill="#2f4d44" opacity="0.4"/>
+
+      <!-- Wavy water surface lines -->
+      <g stroke="#6e9388" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.65">
+        <path d="M 30 860 Q 80 856 130 860 Q 180 864 230 860 Q 280 856 330 860"/>
+        <path d="M 400 870 Q 450 866 500 870 Q 550 874 600 870 Q 650 866 700 870"/>
+        <path d="M 800 855 Q 850 851 900 855 Q 950 859 1000 855 Q 1050 851 1100 855"/>
+        <path d="M 1200 868 Q 1250 864 1300 868 Q 1350 872 1400 868 Q 1450 864 1500 868"/>
+        <path d="M 80 905 Q 130 901 180 905 Q 230 909 280 905"/>
+        <path d="M 600 910 Q 650 906 700 910 Q 750 914 800 910"/>
+        <path d="M 1100 905 Q 1150 901 1200 905 Q 1250 909 1300 905"/>
+      </g>
+
+      <!-- LILY PADS -->
+      <g stroke="#234d3e" stroke-width="2" stroke-linejoin="round">
+        <ellipse cx="250" cy="895" rx="28" ry="11" fill="#6ba070"/>
+        <path d="M 250 895 L 254 884" stroke="#234d3e" stroke-width="1.5"/>
+        <ellipse cx="500" cy="918" rx="32" ry="12" fill="#7ab078"/>
+        <path d="M 500 918 L 504 906" stroke="#234d3e" stroke-width="1.5"/>
+        <ellipse cx="780" cy="900" rx="26" ry="10" fill="#6ba070"/>
+        <path d="M 780 900 L 784 890" stroke="#234d3e" stroke-width="1.5"/>
+        <ellipse cx="1080" cy="920" rx="30" ry="11" fill="#7ab078"/>
+        <path d="M 1080 920 L 1084 909" stroke="#234d3e" stroke-width="1.5"/>
+        <ellipse cx="1380" cy="895" rx="28" ry="11" fill="#6ba070"/>
+        <path d="M 1380 895 L 1384 884" stroke="#234d3e" stroke-width="1.5"/>
+      </g>
+
+      <!-- REEDS clusters at edges and middle -->
+      <g stroke="#2f5240" stroke-width="2.5" stroke-linecap="round" fill="none">
+        <!-- Left cluster -->
+        <line x1="50" y1="850" x2="48" y2="820"/>
+        <line x1="58" y1="852" x2="60" y2="822"/>
+        <line x1="68" y1="850" x2="66" y2="824"/>
+        <line x1="78" y1="855" x2="80" y2="828"/>
+        <!-- Reed tips (cattail blobs) -->
+        <ellipse cx="48" cy="822" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+        <ellipse cx="60" cy="824" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+        <ellipse cx="80" cy="830" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+
+        <!-- Middle cluster -->
+        <line x1="640" y1="848" x2="638" y2="818"/>
+        <line x1="650" y1="850" x2="652" y2="820"/>
+        <line x1="660" y1="848" x2="658" y2="822"/>
+        <ellipse cx="638" cy="820" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+        <ellipse cx="652" cy="822" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+
+        <!-- Right cluster -->
+        <line x1="1540" y1="850" x2="1538" y2="820"/>
+        <line x1="1550" y1="852" x2="1552" y2="822"/>
+        <line x1="1560" y1="850" x2="1558" y2="824"/>
+        <line x1="1570" y1="855" x2="1572" y2="828"/>
+        <ellipse cx="1538" cy="822" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+        <ellipse cx="1552" cy="824" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+        <ellipse cx="1572" cy="830" rx="2.5" ry="6" fill="#5b3e22" stroke="#3a2818" stroke-width="1"/>
+      </g>
+
+      <!-- HALF-SUNK LOG -->
+      <g transform="translate(900, 880) rotate(-12)" stroke="#2f1f12" stroke-width="2.5" stroke-linejoin="round">
+        <rect x="0" y="0" width="160" height="22" fill="#6b4a30" rx="3"/>
+        <ellipse cx="0" cy="11" rx="9" ry="11" fill="#8a5e36"/>
+        <circle cx="0" cy="11" r="3.5" fill="#3a2818" stroke="none"/>
+        <ellipse cx="160" cy="11" rx="9" ry="11" fill="#8a5e36"/>
+        <!-- Bark lines on log -->
+        <line x1="30" y1="6" x2="30" y2="16" stroke="#3a2818" stroke-width="1"/>
+        <line x1="60" y1="5" x2="60" y2="17" stroke="#3a2818" stroke-width="1"/>
+        <line x1="90" y1="6" x2="90" y2="16" stroke="#3a2818" stroke-width="1"/>
+        <line x1="120" y1="5" x2="120" y2="17" stroke="#3a2818" stroke-width="1"/>
+      </g>
+
+      <!-- "TURN BACK" half-sunk sign -->
+      <g transform="translate(310, 855) rotate(8)">
+        <line x1="0" y1="0" x2="0" y2="30" stroke="#3a2818" stroke-width="3"/>
+        <rect x="-32" y="-15" width="64" height="18" fill="#c4a06a" stroke="#3a2818" stroke-width="2" rx="2"/>
+        <text x="0" y="-2" font-size="9" fill="#7e2e2e" text-anchor="middle" font-weight="700" font-family="sans-serif">TURN BACK</text>
+      </g>
+
+      <!-- MIST over swamp -->
+      <g opacity="0.4">
+        <ellipse cx="200" cy="845" rx="180" ry="22" fill="#ffffff"/>
+        <ellipse cx="700" cy="845" rx="200" ry="20" fill="#ffffff"/>
+        <ellipse cx="1200" cy="848" rx="200" ry="22" fill="#ffffff"/>
+        <ellipse cx="1500" cy="843" rx="160" ry="18" fill="#ffffff"/>
+      </g>
     </svg>
 
-    <!-- Tier labels along left edge -->
-    <div class="tier-label" style="top: 14%;">Summit</div>
-    <div class="tier-label" style="top: 36%;">Upper trail</div>
-    <div class="tier-label" style="top: 56%;">Lower trail</div>
-    <div class="tier-label" style="top: 73%;">Scree slope</div>
-    <div class="tier-label" style="top: 89%;">Foggy lowlands</div>
+    <!-- Tier labels -->
+    <div class="tier-label" style="top: 10%;">Summit</div>
+    <div class="tier-label" style="top: 39%;">Bridged Trail</div>
+    <div class="tier-label" style="top: 58%;">Marked Trail</div>
+    <div class="tier-label" style="top: 76%;">Loose Scree</div>
+    <div class="tier-label" style="top: 88%;">Swamp Lowlands</div>
 
-    <!-- Markers will be appended here by JS -->
+    <!-- Markers (populated by JS) -->
     <div class="markers" id="markers"></div>
   </div>
 
@@ -370,20 +525,23 @@
 <script>
 const TIER_META = {
   strong:        { label: "Strong Evidence",      terrain: "Summit" },
-  "mod-strong":  { label: "Moderate-to-Strong",   terrain: "Well-built trail" },
-  moderate:      { label: "Moderate Evidence",    terrain: "Marked trail" },
-  questionable:  { label: "Questionable",         terrain: "Loose scree" },
-  unsupported:   { label: "Unsupported",          terrain: "Foggy lowlands" },
+  "mod-strong":  { label: "Moderate-to-Strong",   terrain: "Bridged Trail" },
+  moderate:      { label: "Moderate Evidence",    terrain: "Marked Trail" },
+  questionable:  { label: "Questionable",         terrain: "Loose Scree" },
+  unsupported:   { label: "Unsupported",          terrain: "Swamp Lowlands" },
 };
 
-// Per-tier placement zones (% of viewport) + grid shape
-const ZONES = {
-  strong:        { rows: 3, cols: 8, x1: 25, x2: 75, y1: 11, y2: 26, jitter: 1.6 },
-  "mod-strong":  { rows: 3, cols: 7, x1: 8,  x2: 92, y1: 33, y2: 46, jitter: 2.2 },
-  moderate:      { rows: 2, cols: 10, x1: 5,  x2: 95, y1: 53, y2: 64, jitter: 2.4 },
-  questionable:  { rows: 2, cols: 5, x1: 12, x2: 88, y1: 70, y2: 80, jitter: 3.5 },
-  unsupported:   { rows: 2, cols: 5, x1: 10, x2: 90, y1: 86, y2: 94, jitter: 4.5 },
-};
+// Placement strategy per tier
+//   - strong: cluster around summit (free placement around peak)
+//   - mod-strong: along upperTrail SVG path
+//   - moderate: along lowerTrail SVG path
+//   - questionable: scattered in scree band
+//   - unsupported: scattered in swamp band
+const SCREE_ZONE   = { x1: 8,  x2: 92, y1: 79, y2: 84 };
+const SWAMP_ZONE   = { x1: 6,  x2: 94, y1: 88, y2: 96 };
+
+// Cluster around summit (24 markers, in three rings around peak at ~50% x, ~12% y)
+const SUMMIT = { cx: 51.5, cy: 15, ringRs: [4, 8, 12], ringCounts: [4, 8, 12] };
 
 const TECHNIQUES = [
   // STRONG (24)
@@ -481,73 +639,144 @@ const TECHNIQUES = [
   { num: 84, name: "Detox cleanses", ev: "unsupported", howto: "Use juices, teas, fasting, or colon cleanses to 'flush toxins' from the body." },
 ];
 
-// Deterministic pseudo-random per marker
-function hashJitter(n, salt) {
+// Deterministic per-marker pseudo-random
+function jitter(n, salt) {
   const v = Math.sin(n * 12.9898 + salt * 78.233) * 43758.5453;
   return (v - Math.floor(v)) - 0.5;
 }
 
-// Place each technique inside its tier's zone
-const placed = [];
-const byTier = {};
-TECHNIQUES.forEach(t => {
-  (byTier[t.ev] = byTier[t.ev] || []).push(t);
-});
-Object.entries(byTier).forEach(([ev, list]) => {
-  const z = ZONES[ev];
-  list.forEach((t, i) => {
-    const row = Math.floor(i / z.cols);
-    const col = i % z.cols;
-    const xBase = z.x1 + (col + 0.5) * (z.x2 - z.x1) / z.cols;
-    const yBase = z.y1 + (row + 0.5) * (z.y2 - z.y1) / Math.max(z.rows, Math.ceil(list.length / z.cols));
-    const x = xBase + hashJitter(t.num, 1) * z.jitter;
-    const y = yBase + hashJitter(t.num, 2) * z.jitter * 0.6;
-    placed.push({ ...t, x, y });
+// Convert SVG (viewBox) coord to scene-relative percent
+function svgToPct(svg, x, y) {
+  return { left: (x / 1600) * 100, top: (y / 1000) * 100 };
+}
+
+// Place markers along an SVG path
+function placeOnPath(pathEl, n, jitterPx = 5) {
+  const len = pathEl.getTotalLength();
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const t = (i + 0.5) / n;
+    const pt = pathEl.getPointAtLength(t * len);
+    // small perpendicular jitter so they don't sit perfectly on the line
+    const jx = jitter(i + 1, 3) * jitterPx;
+    const jy = jitter(i + 1, 4) * jitterPx * 1.6 - 8; // bias upward off the trail line
+    out.push({ x: pt.x + jx, y: pt.y + jy });
+  }
+  return out;
+}
+
+// Random scattered placement in a rectangular zone (as percent)
+function placeInZone(zone, n, jitterAmt = 1.6) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const t = (i + 0.5) / n;
+    const x = zone.x1 + t * (zone.x2 - zone.x1);
+    const yMid = (zone.y1 + zone.y2) / 2;
+    const yRange = (zone.y2 - zone.y1);
+    const jx = jitter(i + 1, 5) * (jitterAmt * 1.5);
+    const jy = jitter(i + 1, 6) * yRange;
+    out.push({ xPct: x + jx, yPct: yMid + jy });
+  }
+  return out;
+}
+
+// Summit cluster (rings around peak)
+function placeSummit(techniques, summit) {
+  const out = [];
+  let i = 0;
+  for (let r = 0; r < summit.ringRs.length; r++) {
+    const radius = summit.ringRs[r];
+    const count = summit.ringCounts[r];
+    for (let k = 0; k < count && i < techniques.length; k++, i++) {
+      const angle = (k / count) * Math.PI * 2 - Math.PI / 2;
+      // Squish horizontally to spread wider, less vertically
+      const x = summit.cx + Math.cos(angle) * radius * 1.5;
+      const y = summit.cy + Math.sin(angle) * radius * 0.7;
+      out.push({ xPct: x, yPct: y });
+    }
+  }
+  return out;
+}
+
+const markersEl = document.getElementById("markers");
+const svg = document.getElementById("landscape");
+const upperTrail = document.getElementById("upperTrail");
+const lowerTrail = document.getElementById("lowerTrail");
+
+// Wait a tick for SVG layout
+requestAnimationFrame(() => {
+  const byTier = {};
+  TECHNIQUES.forEach(t => (byTier[t.ev] = byTier[t.ev] || []).push(t));
+
+  // Strong: cluster around summit
+  const summitPositions = placeSummit(byTier.strong, SUMMIT);
+  byTier.strong.forEach((t, i) => placeMarker(t, summitPositions[i].xPct, summitPositions[i].yPct));
+
+  // Mod-strong: along upper trail (positions returned in SVG coords)
+  const modStrongPts = placeOnPath(upperTrail, byTier["mod-strong"].length, 7);
+  byTier["mod-strong"].forEach((t, i) => {
+    const pct = svgToPct(svg, modStrongPts[i].x, modStrongPts[i].y);
+    placeMarker(t, pct.left, pct.top);
   });
+
+  // Moderate: along lower trail
+  const modPts = placeOnPath(lowerTrail, byTier.moderate.length, 7);
+  byTier.moderate.forEach((t, i) => {
+    const pct = svgToPct(svg, modPts[i].x, modPts[i].y);
+    placeMarker(t, pct.left, pct.top);
+  });
+
+  // Questionable: scattered in scree
+  const screePts = placeInZone(SCREE_ZONE, byTier.questionable.length, 2.2);
+  byTier.questionable.forEach((t, i) => placeMarker(t, screePts[i].xPct, screePts[i].yPct));
+
+  // Unsupported: scattered in swamp
+  const swampPts = placeInZone(SWAMP_ZONE, byTier.unsupported.length, 2.5);
+  byTier.unsupported.forEach((t, i) => placeMarker(t, swampPts[i].xPct, swampPts[i].yPct));
+
+  attachTooltips();
 });
 
-// Render markers
-const markersEl = document.getElementById("markers");
-placed.forEach(t => {
+function placeMarker(t, xPct, yPct) {
   const m = document.createElement("div");
   m.className = `marker ${t.ev}`;
-  m.style.left = t.x + "%";
-  m.style.top  = t.y + "%";
+  m.style.left = xPct + "%";
+  m.style.top = yPct + "%";
   m.dataset.num = t.num;
   m.dataset.name = t.name;
   m.dataset.howto = t.howto;
   m.dataset.ev = t.ev;
+  m.textContent = t.num;
   markersEl.appendChild(m);
-});
+}
 
-// Tooltip behavior
-const tooltip = document.getElementById("tooltip");
-const ttMeta  = tooltip.querySelector(".tt-meta");
-const ttName  = tooltip.querySelector(".tt-name");
-const ttHowto = tooltip.querySelector(".tt-howto");
-
-document.querySelectorAll(".marker").forEach(m => {
-  m.addEventListener("mouseenter", e => {
-    const meta = TIER_META[m.dataset.ev];
-    ttMeta.textContent  = `#${m.dataset.num} · ${meta.terrain} · ${meta.label}`;
-    ttName.textContent  = m.dataset.name;
-    ttHowto.textContent = m.dataset.howto;
-    tooltip.style.display = "block";
-    positionTooltip(e);
+function attachTooltips() {
+  const tooltip = document.getElementById("tooltip");
+  const ttMeta = tooltip.querySelector(".tt-meta");
+  const ttName = tooltip.querySelector(".tt-name");
+  const ttHowto = tooltip.querySelector(".tt-howto");
+  document.querySelectorAll(".marker").forEach(m => {
+    m.addEventListener("mouseenter", e => {
+      const meta = TIER_META[m.dataset.ev];
+      ttMeta.textContent = `#${m.dataset.num} · ${meta.terrain} · ${meta.label}`;
+      ttName.textContent = m.dataset.name;
+      ttHowto.textContent = m.dataset.howto;
+      tooltip.style.display = "block";
+      positionTooltip(e);
+    });
+    m.addEventListener("mousemove", positionTooltip);
+    m.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
   });
-  m.addEventListener("mousemove", positionTooltip);
-  m.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
-});
-
-function positionTooltip(e) {
-  const padding = 16;
-  const rect = tooltip.getBoundingClientRect();
-  let x = e.clientX + padding;
-  let y = e.clientY + padding;
-  if (x + rect.width > window.innerWidth - 8) x = e.clientX - rect.width - padding;
-  if (y + rect.height > window.innerHeight - 8) y = e.clientY - rect.height - padding;
-  tooltip.style.left = x + "px";
-  tooltip.style.top  = y + "px";
+  function positionTooltip(e) {
+    const padding = 14;
+    const rect = tooltip.getBoundingClientRect();
+    let x = e.clientX + padding;
+    let y = e.clientY + padding;
+    if (x + rect.width > window.innerWidth - 8) x = e.clientX - rect.width - padding;
+    if (y + rect.height > window.innerHeight - 8) y = e.clientY - rect.height - padding;
+    tooltip.style.left = x + "px";
+    tooltip.style.top = y + "px";
+  }
 }
 </script>
 </body>
