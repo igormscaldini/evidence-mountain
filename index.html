@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mountain of Evidence — Self-Help Techniques</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #1d1620; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #f5ecdc;
+    overflow-x: hidden;
+  }
+  header {
+    text-align: center;
+    padding: 28px 16px 8px;
+    background: linear-gradient(180deg, #2a1f2c 0%, #3a2b3a 100%);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fdf0d8;
+  }
+  header .subtitle {
+    margin: 8px auto 0;
+    max-width: 720px;
+    font-size: 13px;
+    color: #d8c9b8;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .legend {
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: 4px 18px;
+    padding: 12px 16px 18px;
+    background: linear-gradient(180deg, #3a2b3a 0%, #4a3344 100%);
+    font-size: 11px;
+    color: #e8d8c4;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .swatch {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .swatch.s-strong       { background: radial-gradient(circle, #fff2b8 25%, #f4d58d 80%); box-shadow: 0 0 10px #fce29a; }
+  .swatch.s-mod-strong   { background: #f0e2c4; box-shadow: 0 0 6px rgba(240,226,196,0.55); }
+  .swatch.s-moderate     { background: #c8d4ae; box-shadow: 0 0 4px rgba(200,212,174,0.35); }
+  .swatch.s-questionable { background: #c39c83; opacity: 0.9; }
+  .swatch.s-unsupported  { background: #d2bdbd; opacity: 0.55; }
+
+  /* The scene */
+  .scene {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1600 / 1000;
+    overflow: hidden;
+  }
+  .landscape {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .markers {
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+  .marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    cursor: help;
+    pointer-events: auto;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  }
+  .marker:hover {
+    transform: translate(-50%, -50%) scale(1.8);
+    z-index: 50;
+  }
+  .marker.strong {
+    width: 14px; height: 14px;
+    background: radial-gradient(circle, #fff5c0 28%, #f4d58d 75%);
+    box-shadow: 0 0 14px #fce29a, 0 0 28px rgba(252, 226, 154, 0.55);
+  }
+  .marker.strong:hover {
+    box-shadow: 0 0 22px #fff5c0, 0 0 48px rgba(252, 226, 154, 0.8);
+  }
+  .marker.mod-strong {
+    width: 12px; height: 12px;
+    background: radial-gradient(circle, #fbeed1 30%, #f0e2c4 80%);
+    box-shadow: 0 0 10px rgba(240, 226, 196, 0.7);
+  }
+  .marker.mod-strong:hover {
+    box-shadow: 0 0 16px rgba(251, 238, 209, 0.95);
+  }
+  .marker.moderate {
+    width: 10px; height: 10px;
+    background: radial-gradient(circle, #d9e3c0 30%, #c8d4ae 80%);
+    box-shadow: 0 0 6px rgba(200, 212, 174, 0.5);
+  }
+  .marker.moderate:hover {
+    box-shadow: 0 0 12px rgba(217, 227, 192, 0.85);
+  }
+  .marker.questionable {
+    width: 9px; height: 9px;
+    background: radial-gradient(circle, #d2ab92 30%, #b08a72 85%);
+    opacity: 0.92;
+    box-shadow: 0 0 4px rgba(176, 138, 114, 0.6);
+  }
+  .marker.questionable:hover {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(210, 171, 146, 0.9);
+  }
+  .marker.unsupported {
+    width: 8px; height: 8px;
+    background: radial-gradient(circle, #e0cccc 30%, #b8a4a4 90%);
+    opacity: 0.5;
+    filter: blur(0.4px);
+    box-shadow: 0 0 8px rgba(224, 204, 204, 0.35);
+  }
+  .marker.unsupported:hover {
+    opacity: 0.95;
+    filter: blur(0);
+    box-shadow: 0 0 16px rgba(224, 204, 204, 0.85);
+  }
+
+  /* Tier labels (left edge of scene) */
+  .tier-label {
+    position: absolute;
+    left: 16px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 235, 210, 0.45);
+    font-weight: 600;
+    pointer-events: none;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  /* Tooltip */
+  #tooltip {
+    position: fixed;
+    display: none;
+    max-width: 340px;
+    background: rgba(20, 14, 18, 0.95);
+    color: #fdf0d8;
+    padding: 13px 15px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 245, 220, 0.1);
+    z-index: 1000;
+    pointer-events: none;
+    backdrop-filter: blur(6px);
+  }
+  #tooltip .tt-meta {
+    font-size: 10px;
+    color: #c9a99e;
+    margin-bottom: 4px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  #tooltip .tt-name {
+    font-weight: 700;
+    font-size: 14.5px;
+    color: #fff5dc;
+    margin-bottom: 6px;
+  }
+  #tooltip .tt-howto {
+    color: #e3d4c0;
+  }
+
+  footer {
+    text-align: center;
+    padding: 16px 16px 28px;
+    background: #1d1620;
+    color: #806b65;
+    font-size: 11px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>The Mountain of Evidence</h1>
+    <p class="subtitle">84 self-help techniques placed across a landscape of trust — from the foggy lowlands of unsupported claims to the sunlit summit of strong evidence. Hover any marker to see how to do it.</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-item"><span class="swatch s-strong"></span>Summit · Strong Evidence</div>
+    <div class="legend-item"><span class="swatch s-mod-strong"></span>Well-Built Trail · Moderate-to-Strong</div>
+    <div class="legend-item"><span class="swatch s-moderate"></span>Marked Trail · Moderate</div>
+    <div class="legend-item"><span class="swatch s-questionable"></span>Loose Scree · Questionable</div>
+    <div class="legend-item"><span class="swatch s-unsupported"></span>Foggy Lowlands · Unsupported</div>
+  </div>
+
+  <div class="scene" id="scene">
+    <svg class="landscape" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <!-- Sky gradient: peach top → soft pink → pale lavender -->
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#fde2d3"/>
+          <stop offset="35%"  stop-color="#f9d2c8"/>
+          <stop offset="70%"  stop-color="#e9c4d3"/>
+          <stop offset="100%" stop-color="#cdb4cf"/>
+        </linearGradient>
+
+        <!-- Sun glow behind summit -->
+        <radialGradient id="sunglow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#fff7c8" stop-opacity="0.95"/>
+          <stop offset="35%"  stop-color="#ffe5a0" stop-opacity="0.55"/>
+          <stop offset="70%"  stop-color="#fbcfa8" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="#fbcfa8" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Mountain layer gradients (back to front) -->
+        <linearGradient id="far-mtn" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#d6c4d8"/>
+          <stop offset="100%" stop-color="#c3b1c8"/>
+        </linearGradient>
+        <linearGradient id="mid-mtn" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#c9b4c4"/>
+          <stop offset="100%" stop-color="#aa97a6"/>
+        </linearGradient>
+        <linearGradient id="main-mtn" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#f0d6c2"/>
+          <stop offset="30%"  stop-color="#dbb89e"/>
+          <stop offset="65%"  stop-color="#a89078"/>
+          <stop offset="100%" stop-color="#7a6557"/>
+        </linearGradient>
+        <linearGradient id="scree" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#8a7160"/>
+          <stop offset="100%" stop-color="#5d4a44"/>
+        </linearGradient>
+        <linearGradient id="swamp" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#6e6260" stop-opacity="0.85"/>
+          <stop offset="50%"  stop-color="#544543" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#3a2e30"/>
+        </linearGradient>
+
+        <!-- Mist overlay -->
+        <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#fff5e8" stop-opacity="0"/>
+          <stop offset="50%"  stop-color="#fff5e8" stop-opacity="0.65"/>
+          <stop offset="100%" stop-color="#fff5e8" stop-opacity="0.25"/>
+        </linearGradient>
+
+        <!-- Filters: gaussian blur for painterly softness -->
+        <filter id="soft-blur" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation="2.5"/>
+        </filter>
+        <filter id="strong-blur" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="10"/>
+        </filter>
+        <filter id="bloom" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="14"/>
+        </filter>
+      </defs>
+
+      <!-- Sky -->
+      <rect width="1600" height="1000" fill="url(#sky)"/>
+
+      <!-- Sun glow (behind summit) -->
+      <circle cx="800" cy="200" r="380" fill="url(#sunglow)" filter="url(#bloom)"/>
+      <circle cx="800" cy="200" r="180" fill="url(#sunglow)"/>
+
+      <!-- Far mountain layer (very soft, distant) -->
+      <path d="M -100 760 Q 200 660 400 620 T 800 480 T 1200 600 T 1700 720 L 1700 1000 L -100 1000 Z"
+            fill="url(#far-mtn)" opacity="0.7" filter="url(#strong-blur)"/>
+
+      <!-- Mid mountain layer -->
+      <path d="M -100 830 Q 150 720 350 640 Q 550 540 750 400 Q 900 320 1050 380 Q 1250 520 1450 680 Q 1600 760 1700 800 L 1700 1000 L -100 1000 Z"
+            fill="url(#mid-mtn)" opacity="0.85" filter="url(#soft-blur)"/>
+
+      <!-- Main mountain (the one with the summit) -->
+      <path d="M -100 1000 L -100 820
+               C 120 760 280 660 420 540
+               C 560 420 700 280 800 180
+               C 900 280 1040 420 1180 540
+               C 1320 660 1480 760 1700 820
+               L 1700 1000 Z"
+            fill="url(#main-mtn)"/>
+
+      <!-- Well-built trail (mod-to-strong band): a curving line on upper slope -->
+      <path d="M 120 460 Q 280 420 420 430 Q 580 440 720 410 Q 880 380 1040 410 Q 1180 430 1340 450 Q 1460 470 1560 480"
+            fill="none" stroke="#f7e3c4" stroke-width="2.2" stroke-linecap="round"
+            opacity="0.55" stroke-dasharray="0"/>
+      <!-- Suggested bridges on the well-built trail (small pale rectangles) -->
+      <g opacity="0.55" fill="#f7e3c4">
+        <rect x="335" y="425" width="22" height="3" rx="1"/>
+        <rect x="630" y="400" width="22" height="3" rx="1"/>
+        <rect x="945" y="400" width="22" height="3" rx="1"/>
+        <rect x="1240" y="438" width="22" height="3" rx="1"/>
+      </g>
+
+      <!-- Marked trail (moderate band): simpler thin dashed line, lower on the mountain -->
+      <path d="M 60 600 Q 220 580 380 600 Q 540 620 700 600 Q 860 580 1020 600 Q 1180 620 1340 600 Q 1480 590 1560 600"
+            fill="none" stroke="#dfd1ab" stroke-width="1.6" stroke-linecap="round"
+            opacity="0.5" stroke-dasharray="6 5"/>
+
+      <!-- Scree slope (questionable band): rougher textured patch -->
+      <path d="M -100 1000 L -100 760
+               C 100 720 250 700 400 720
+               C 550 740 700 730 850 720
+               C 1000 710 1150 720 1300 730
+               C 1450 740 1600 750 1700 760
+               L 1700 1000 Z"
+            fill="url(#scree)" opacity="0.75"/>
+      <!-- Scattered pebbles on scree -->
+      <g opacity="0.4" fill="#3d322c">
+        <circle cx="180" cy="780" r="3"/>
+        <circle cx="280" cy="800" r="2.5"/>
+        <circle cx="420" cy="775" r="3.5"/>
+        <circle cx="560" cy="795" r="2"/>
+        <circle cx="690" cy="790" r="3"/>
+        <circle cx="820" cy="780" r="2.5"/>
+        <circle cx="970" cy="800" r="3"/>
+        <circle cx="1110" cy="785" r="2.5"/>
+        <circle cx="1240" cy="800" r="3.5"/>
+        <circle cx="1380" cy="790" r="2.5"/>
+        <circle cx="1490" cy="795" r="3"/>
+      </g>
+
+      <!-- Swamp / foggy lowlands (unsupported band) -->
+      <rect x="-100" y="830" width="1800" height="200" fill="url(#swamp)"/>
+
+      <!-- Foreground swamp ripples / silhouette -->
+      <path d="M -50 900 Q 200 880 450 895 Q 700 910 950 895 Q 1200 880 1450 900 Q 1600 910 1700 905 L 1700 1000 L -50 1000 Z"
+            fill="#2e2528" opacity="0.55"/>
+      <path d="M -50 940 Q 250 925 550 940 Q 850 955 1150 940 Q 1400 930 1700 945 L 1700 1000 L -50 1000 Z"
+            fill="#241c1f" opacity="0.7"/>
+
+      <!-- Heavy mist over the foothills -->
+      <rect x="-100" y="700" width="1800" height="180" fill="url(#mist)" filter="url(#soft-blur)"/>
+      <!-- Wispy mist clouds -->
+      <ellipse cx="300" cy="780" rx="240" ry="38" fill="#fff5e8" opacity="0.5" filter="url(#soft-blur)"/>
+      <ellipse cx="900" cy="800" rx="320" ry="48" fill="#fff5e8" opacity="0.42" filter="url(#soft-blur)"/>
+      <ellipse cx="1400" cy="770" rx="220" ry="42" fill="#fff5e8" opacity="0.45" filter="url(#soft-blur)"/>
+
+      <!-- Tiny figure on the trail (sense of scale) -->
+      <g transform="translate(990, 600)" opacity="0.85">
+        <circle cx="0" cy="-7" r="2" fill="#3a2e28"/>
+        <rect x="-1.5" y="-5" width="3" height="7" fill="#3a2e28" rx="0.5"/>
+      </g>
+
+      <!-- Soft atmospheric overlay near top -->
+      <rect x="0" y="0" width="1600" height="180" fill="#fff5e8" opacity="0.18"/>
+    </svg>
+
+    <!-- Tier labels along left edge -->
+    <div class="tier-label" style="top: 14%;">Summit</div>
+    <div class="tier-label" style="top: 36%;">Upper trail</div>
+    <div class="tier-label" style="top: 56%;">Lower trail</div>
+    <div class="tier-label" style="top: 73%;">Scree slope</div>
+    <div class="tier-label" style="top: 89%;">Foggy lowlands</div>
+
+    <!-- Markers will be appended here by JS -->
+    <div class="markers" id="markers"></div>
+  </div>
+
+  <div id="tooltip">
+    <div class="tt-meta"></div>
+    <div class="tt-name"></div>
+    <div class="tt-howto"></div>
+  </div>
+
+  <footer>The lower the marker, the shakier the ground beneath it.</footer>
+
+<script>
+const TIER_META = {
+  strong:        { label: "Strong Evidence",      terrain: "Summit" },
+  "mod-strong":  { label: "Moderate-to-Strong",   terrain: "Well-built trail" },
+  moderate:      { label: "Moderate Evidence",    terrain: "Marked trail" },
+  questionable:  { label: "Questionable",         terrain: "Loose scree" },
+  unsupported:   { label: "Unsupported",          terrain: "Foggy lowlands" },
+};
+
+// Per-tier placement zones (% of viewport) + grid shape
+const ZONES = {
+  strong:        { rows: 3, cols: 8, x1: 25, x2: 75, y1: 11, y2: 26, jitter: 1.6 },
+  "mod-strong":  { rows: 3, cols: 7, x1: 8,  x2: 92, y1: 33, y2: 46, jitter: 2.2 },
+  moderate:      { rows: 2, cols: 10, x1: 5,  x2: 95, y1: 53, y2: 64, jitter: 2.4 },
+  questionable:  { rows: 2, cols: 5, x1: 12, x2: 88, y1: 70, y2: 80, jitter: 3.5 },
+  unsupported:   { rows: 2, cols: 5, x1: 10, x2: 90, y1: 86, y2: 94, jitter: 4.5 },
+};
+
+const TECHNIQUES = [
+  // STRONG (24)
+  { num:  1, name: "CBT Thought Record", ev: "strong", howto: "Write the situation, emotion, automatic thought, evidence for and against it, a balanced thought, and the next action." },
+  { num:  2, name: "ABC Technique", ev: "strong", howto: "Record the Activating event, Belief, and Consequence, then dispute the belief and choose a more useful response." },
+  { num:  3, name: "Cognitive restructuring", ev: "strong", howto: "Identify a distorted thought, test it against evidence, and replace it with a more accurate belief." },
+  { num:  4, name: "Problem-solving therapy", ev: "strong", howto: "Define the problem, generate options, choose one, act, and review the result." },
+  { num:  5, name: "Mindfulness meditation", ev: "strong", howto: "Focus on breath, body, or sound, and gently return attention whenever the mind wanders." },
+  { num:  6, name: "Savoring", ev: "strong", howto: "Slow down, attend to pleasant details, and deliberately extend the positive experience." },
+  { num:  7, name: "Worry time", ev: "strong", howto: "Postpone worries to a scheduled 10–20 minute window and redirect attention when they arise outside it." },
+  { num:  8, name: "Behavioral activation", ev: "strong", howto: "Schedule small rewarding or valued actions before motivation appears, then track mood afterward." },
+  { num:  9, name: "Graded exposure", ev: "strong", howto: "Build a fear hierarchy and repeatedly face the easiest feared situation until anxiety drops before advancing." },
+  { num: 10, name: "ERP (exposure + prevention)", ev: "strong", howto: "Trigger the obsession or fear while deliberately not doing the compulsion, reassurance, avoidance, or escape behavior." },
+  { num: 11, name: "Stable-cue habits", ev: "strong", howto: "Repeat one small behavior after the same cue in the same context until it becomes automatic." },
+  { num: 12, name: "Habit stacking", ev: "strong", howto: "Attach a new behavior immediately after an existing reliable routine." },
+  { num: 13, name: "Implementation intentions", ev: "strong", howto: "Write a specific 'If situation X happens, then I will do behavior Y' plan." },
+  { num: 14, name: "Specific goal + feedback", ev: "strong", howto: "Set a hard but reachable target and compare progress against it regularly." },
+  { num: 15, name: "Self-monitoring", ev: "strong", howto: "Record the target behavior or outcome daily so patterns become visible." },
+  { num: 16, name: "Feedback loops", ev: "strong", howto: "Review tracked data, identify the next bottleneck, and change one variable at a time." },
+  { num: 17, name: "Social support", ev: "strong", howto: "Join or build a group where the desired behavior is normal, visible, and reinforced." },
+  { num: 18, name: "Aerobic exercise", ev: "strong", howto: "Do brisk walking, jogging, cycling, swimming, or similar moderate-to-vigorous movement for 20–45 minutes on most days." },
+  { num: 19, name: "Resistance training", ev: "strong", howto: "Train major muscle groups 2–3 times per week with progressive overload and enough recovery." },
+  { num: 20, name: "Progressive relaxation", ev: "strong", howto: "Tense and release each major muscle group in sequence while noticing the contrast." },
+  { num: 21, name: "Sleep restriction", ev: "strong", howto: "Limit time in bed to actual sleep time, then gradually expand the window as sleep efficiency improves." },
+  { num: 22, name: "Commitment device", ev: "strong", howto: "Stake money, reputation, or access so quitting has a real cost." },
+  { num: 23, name: "Default design", ev: "strong", howto: "Make the good option the default and add extra steps to the bad option." },
+  { num: 24, name: "Nature exposure", ev: "strong", howto: "Spend regular time walking, sitting, or exercising in green or blue spaces." },
+
+  // MODERATE-TO-STRONG (21)
+  { num: 25, name: "Cognitive defusion", ev: "mod-strong", howto: "Label thoughts as thoughts, such as 'I'm having the thought that…,' instead of treating them as commands." },
+  { num: 26, name: "Gratitude journaling", ev: "mod-strong", howto: "Write three specific things you feel grateful for each day." },
+  { num: 27, name: "Three Good Things", ev: "mod-strong", howto: "Each evening, list three good events from the day and your role in them (or why they happened)." },
+  { num: 28, name: "Tiny Habits", ev: "mod-strong", howto: "Shrink the behavior until it feels easy, perform it after a cue, and briefly celebrate completion." },
+  { num: 29, name: "GTD capture", ev: "mod-strong", howto: "Put every open loop into one trusted inbox, clarify the next action, and review it regularly." },
+  { num: 30, name: "Deep Work", ev: "mod-strong", howto: "Schedule distraction-free blocks for cognitively demanding work and remove communication channels." },
+  { num: 31, name: "Action planning", ev: "mod-strong", howto: "Specify exactly when, where, how, and with what materials you will act." },
+  { num: 32, name: "Process visualization", ev: "mod-strong", howto: "Mentally rehearse the steps, obstacles, and responses rather than only the desired outcome." },
+  { num: 33, name: "Values clarification", ev: "mod-strong", howto: "Write the life domains that matter most and choose actions aligned with them." },
+  { num: 34, name: "Daily review", ev: "mod-strong", howto: "At day's end, note what happened, what worked, what failed, and tomorrow's priority." },
+  { num: 35, name: "Personal mission", ev: "mod-strong", howto: "Draft a short statement of principles, roles, and long-term aims and revisit it regularly." },
+  { num: 36, name: "Life audit", ev: "mod-strong", howto: "Rate major life domains, choose the lowest-rated high-value domain, and set one action." },
+  { num: 37, name: "Assertiveness scripts", ev: "mod-strong", howto: "State the facts, your feeling, your request, and your boundary in calm direct language." },
+  { num: 38, name: "Active listening", ev: "mod-strong", howto: "Reflect the other person's point and emotion before offering advice or disagreement." },
+  { num: 39, name: "Step-count target", ev: "mod-strong", howto: "Pick a realistic daily step target, track it, and increase it gradually when it becomes easy." },
+  { num: 40, name: "Diaphragmatic breathing", ev: "mod-strong", howto: "Breathe low into the belly at roughly 5–6 breaths per minute for several minutes." },
+  { num: 41, name: "Sleep stimulus control", ev: "mod-strong", howto: "Use bed only for sleep and sex, leave if awake too long, and keep a consistent wake time." },
+  { num: 42, name: "Fixed wake time", ev: "mod-strong", howto: "Wake at the same time every day, including weekends, to stabilize the sleep-wake rhythm." },
+  { num: 43, name: "Temptation bundling", ev: "mod-strong", howto: "Pair a beneficial task with an indulgence you only allow during that task." },
+  { num: 44, name: "Environmental design", ev: "mod-strong", howto: "Change your surroundings so the desired behavior is easy and the undesired behavior is inconvenient." },
+  { num: 45, name: "Morning light", ev: "mod-strong", howto: "Get outdoor light soon after waking, ideally while moving and without sunglasses." },
+
+  // MODERATE (20)
+  { num: 46, name: "Self-compassion break", ev: "moderate", howto: "Notice suffering, remind yourself it is human, and speak to yourself as a good coach would." },
+  { num: 47, name: "Expressive writing", ev: "moderate", howto: "Privately write for 15–20 minutes about a stressful event and what it means." },
+  { num: 48, name: "Urge surfing", ev: "moderate", howto: "Notice craving sensations as waves, breathe, and wait without acting until they crest and fall." },
+  { num: 49, name: "Eat the Frog", ev: "moderate", howto: "Do the most aversive high-value task first in the workday." },
+  { num: 50, name: "No Zero Days", ev: "moderate", howto: "Do at least one tiny action toward the goal every day, even on bad days." },
+  { num: 51, name: "Identity-based habits", ev: "moderate", howto: "Treat each small behavior as evidence for the identity you want to strengthen." },
+  { num: 52, name: "Keystone habit", ev: "moderate", howto: "Pick one habit likely to improve other behaviors or make other habits easier and work on developing that habit first." },
+  { num: 53, name: "Don't Break the Chain", ev: "moderate", howto: "Mark each day you complete the habit and try to preserve the streak." },
+  { num: 54, name: "Pomodoro Technique", ev: "moderate", howto: "Work on one task for about 25 minutes, take a short break, and repeat." },
+  { num: 55, name: "Time blocking", ev: "moderate", howto: "Reserve calendar blocks in advance for specific work you want to do during them, for time to rest, for time to exercise, etc." },
+  { num: 56, name: "SMART goals", ev: "moderate", howto: "Convert a vague aim into a Specific, Measurable, Achievable, Relevant, and Time-bound target." },
+  { num: 57, name: "WOOP", ev: "moderate", howto: "Name the Wish, Outcome, Obstacle, and Plan an if-then response to the obstacle." },
+  { num: 58, name: "Best Possible Self", ev: "moderate", howto: "Write vividly about a realistic future in which important goals have gone well." },
+  { num: 59, name: "Strengths use", ev: "moderate", howto: "Identify a character strength and use it in a new way each day." },
+  { num: 60, name: "Daily journaling", ev: "moderate", howto: "Write a brief uncensored account of thoughts, decisions, and lessons each day." },
+  { num: 61, name: "Accountability partner", ev: "moderate", howto: "Tell someone the exact commitment and report completion on a fixed schedule." },
+  { num: 62, name: "Acts of kindness", ev: "moderate", howto: "Perform small concrete helpful acts and notice their effects on others and yourself." },
+  { num: 63, name: "Cold exposure", ev: "moderate", howto: "Expose yourself briefly to cold water, starting mild and short, and observe stress or mood effects." },
+  { num: 64, name: "Breathwork systems", ev: "moderate", howto: "Follow a fixed pattern such as box breathing, 4-7-8 breathing, or cyclic hyperventilation with recovery." },
+  { num: 65, name: "Dopamine fast", ev: "moderate", howto: "Take a planned break from compulsive high-reward behaviors and replace them with low-stimulation activities." },
+
+  // QUESTIONABLE (10)
+  { num: 66, name: "EFT / tapping", ev: "questionable", howto: "While naming a distressing issue, tap through the standard point sequence and re-rate emotional intensity." },
+  { num: 67, name: "Binaural beats", ev: "questionable", howto: "Listen to two slightly different tones through headphones to try to induce a target mental state." },
+  { num: 68, name: "10,000-hour rule", ev: "questionable", howto: "Accumulate practice hours, but do not expect hours alone to overcome feedback quality, genetics, timing, and domain constraints." },
+  { num: 69, name: "Brain training games", ev: "questionable", howto: "Play cognitive games daily, but expect improvement mainly on trained or nearby tasks rather than broad intelligence." },
+  { num: 70, name: "Vision board", ev: "questionable", howto: "Create a collage of goal-related images or words." },
+  { num: 71, name: "Lucky Girl Syndrome", ev: "questionable", howto: "Repeat that things tend to work out for you and look for opportunities that match the expectation." },
+  { num: 72, name: "Scripting manifestation", ev: "questionable", howto: "Write a future scene as if the desired outcome has already happened." },
+  { num: 73, name: "Power posing", ev: "questionable", howto: "Stand or sit expansively for a minute or two before a challenging interaction." },
+  { num: 74, name: "Positive affirmations", ev: "questionable", howto: "Repeat short positive statements about yourself (e.g., 'I am strong and capable.')." },
+  { num: 75, name: "Polyphasic sleep", ev: "questionable", howto: "Split sleep into many short naps to reduce total sleep." },
+
+  // UNSUPPORTED (9)
+  { num: 76, name: "Subliminal audio", ev: "unsupported", howto: "Play affirming messages below conscious audibility while relaxing or sleeping." },
+  { num: 77, name: "Solfeggio frequencies", ev: "unsupported", howto: "Play tracks marketed as specific healing frequencies during meditation, rest, or work." },
+  { num: 78, name: "Multitasking hack", ev: "unsupported", howto: "Rapidly switch between tasks or media streams to get multiple things done at once." },
+  { num: 79, name: "369 method", ev: "unsupported", howto: "Write a desired outcome 3 times in the morning, 6 times midday, and 9 times at night." },
+  { num: 80, name: "Crystals for healing", ev: "unsupported", howto: "Hold or display a crystal to balance energy or heal yourself." },
+  { num: 81, name: "Astrology planning", ev: "unsupported", howto: "Choose goals or timing based on horoscopes, signs, or transits." },
+  { num: 82, name: "Numerology goals", ev: "unsupported", howto: "Select goals, dates, or habits based on personally meaningful numbers." },
+  { num: 83, name: "Law of Attraction", ev: "unsupported", howto: "Think, visualize, or 'vibrate' as if the desired outcome is inevitable or has already happened." },
+  { num: 84, name: "Detox cleanses", ev: "unsupported", howto: "Use juices, teas, fasting, or colon cleanses to 'flush toxins' from the body." },
+];
+
+// Deterministic pseudo-random per marker
+function hashJitter(n, salt) {
+  const v = Math.sin(n * 12.9898 + salt * 78.233) * 43758.5453;
+  return (v - Math.floor(v)) - 0.5;
+}
+
+// Place each technique inside its tier's zone
+const placed = [];
+const byTier = {};
+TECHNIQUES.forEach(t => {
+  (byTier[t.ev] = byTier[t.ev] || []).push(t);
+});
+Object.entries(byTier).forEach(([ev, list]) => {
+  const z = ZONES[ev];
+  list.forEach((t, i) => {
+    const row = Math.floor(i / z.cols);
+    const col = i % z.cols;
+    const xBase = z.x1 + (col + 0.5) * (z.x2 - z.x1) / z.cols;
+    const yBase = z.y1 + (row + 0.5) * (z.y2 - z.y1) / Math.max(z.rows, Math.ceil(list.length / z.cols));
+    const x = xBase + hashJitter(t.num, 1) * z.jitter;
+    const y = yBase + hashJitter(t.num, 2) * z.jitter * 0.6;
+    placed.push({ ...t, x, y });
+  });
+});
+
+// Render markers
+const markersEl = document.getElementById("markers");
+placed.forEach(t => {
+  const m = document.createElement("div");
+  m.className = `marker ${t.ev}`;
+  m.style.left = t.x + "%";
+  m.style.top  = t.y + "%";
+  m.dataset.num = t.num;
+  m.dataset.name = t.name;
+  m.dataset.howto = t.howto;
+  m.dataset.ev = t.ev;
+  markersEl.appendChild(m);
+});
+
+// Tooltip behavior
+const tooltip = document.getElementById("tooltip");
+const ttMeta  = tooltip.querySelector(".tt-meta");
+const ttName  = tooltip.querySelector(".tt-name");
+const ttHowto = tooltip.querySelector(".tt-howto");
+
+document.querySelectorAll(".marker").forEach(m => {
+  m.addEventListener("mouseenter", e => {
+    const meta = TIER_META[m.dataset.ev];
+    ttMeta.textContent  = `#${m.dataset.num} · ${meta.terrain} · ${meta.label}`;
+    ttName.textContent  = m.dataset.name;
+    ttHowto.textContent = m.dataset.howto;
+    tooltip.style.display = "block";
+    positionTooltip(e);
+  });
+  m.addEventListener("mousemove", positionTooltip);
+  m.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
+});
+
+function positionTooltip(e) {
+  const padding = 16;
+  const rect = tooltip.getBoundingClientRect();
+  let x = e.clientX + padding;
+  let y = e.clientY + padding;
+  if (x + rect.width > window.innerWidth - 8) x = e.clientX - rect.width - padding;
+  if (y + rect.height > window.innerHeight - 8) y = e.clientY - rect.height - padding;
+  tooltip.style.left = x + "px";
+  tooltip.style.top  = y + "px";
+}
+</script>
+</body>
+</html>
